@@ -235,10 +235,52 @@ func (c *CLI) command(cmd string) {
 		}
 		f.Close()
 		fmt.Println("Successfully wrote", stat.Size(), "bytes to", args[2])
+	} else if name == "remove" {
+		// Remove a path.
+		if len(args) != 2 {
+			fmt.Println("Invalid arguments for remove command. Please provide a path to remove.")
+			return
+		}
+		if c.drive == "" {
+			fmt.Println("No drive selected. Use the drive command to select a drive.")
+			return
+		}
+		err := c.c.Remove(c.drive, args[1])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	} else if name == "move" {
+		// Move a path.
+		if len(args) != 3 {
+			fmt.Println("Invalid arguments for move command. Please provide a path to move and a destination path.")
+			return
+		}
+		if c.drive == "" {
+			fmt.Println("No drive selected. Use the drive command to select a drive.")
+			return
+		}
+		err := c.c.Move(c.drive, args[1], args[2])
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+	} else if name == "help" {
+		fmt.Println("DEEPWELL is a file server developed by cubeflix at https://github.com/cubeflix/deepwell. deepwell-cli is the command line client program.")
+		fmt.Println("drive <name>: Select the drive <name>.")
+		fmt.Println("drives: List the available drives on the server.")
+		fmt.Println("ping: Ping the server.")
+		fmt.Println("create <file>: Create an empty file <file>.")
+		fmt.Println("mkdir <path>: Create an empty directory <path>.")
+		fmt.Println("download <path> <save>: Download the file <path> on the server and save it to the local path <save>.")
+		fmt.Println("ls, dir, list <path>: List the contents of the directory <path>. If <path> is not provided, it will list the root of the drive.")
+		fmt.Println("stat <path>: Display the type and size of the path <path>.")
+		fmt.Println("upload <file> <path>: Upload the local file <file> to the path <path>.")
+		fmt.Println("remove <path>: Remove the path <path>. If it is a directory, it must be empty.")
+		fmt.Println("move <src> <dest>: Move the path <src> to <dest>.")
+		fmt.Println("help: Display this message.")
+		fmt.Println("exit, quit: Exit the CLI.")
 	} else {
 		fmt.Println("Unrecognized command. Use the 'help' command to get a list of commands.")
 	}
-
-	// TODO: help and drive command no drive selected
-
 }
